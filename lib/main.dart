@@ -11,22 +11,44 @@ void main() {
 class MoodModel with ChangeNotifier {
   String _currentMood = '🤪';
   String get currentMood => _currentMood;
+  int hapCounter = 1;
+  int sadCounter = 0;
+  int exCounter = 0;
+  List histList = ["🤪"];
+
   MaterialColor bgColor = Colors.yellow;
   void setHappy() {
     _currentMood = '🤪';
+    histList.add(_currentMood);
+    if (histList.length == 4){
+      histList.removeAt(0);
+    }
     bgColor = Colors.yellow;
+    hapCounter = hapCounter + 1;
     notifyListeners();
   }
 
   void setSad() {
     _currentMood = '😿';
+    histList.add(_currentMood);
+    if (histList.length == 4){
+      histList.removeAt(0);
+    }
     bgColor = Colors.blue;
+    sadCounter = sadCounter + 1;
+
     notifyListeners();
   }
 
   void setExcited() {
     _currentMood = '🥳';
+    histList.add(_currentMood);
+    if (histList.length == 4){
+      histList.removeAt(0);
+    }
     bgColor = Colors.orange;
+    exCounter = exCounter + 1;
+
     notifyListeners();
   }
 }
@@ -58,6 +80,10 @@ class HomePage extends StatelessWidget {
             MoodDisplay(),
             SizedBox(height: 50),
             MoodButtons(),
+            SizedBox(height: 50),
+            MoodCounter(),
+            SizedBox(height: 50),
+            MoodHist(),
           ],
         ),
       ),
@@ -111,6 +137,40 @@ class MoodButtons extends StatelessWidget {
           child: Text('🥳'),
         ),
       ],
+    );
+  }
+}
+class MoodCounter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MoodModel>(
+      builder: (context, moodModel, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+        Text(moodModel.hapCounter.toString()),
+        Text(moodModel.sadCounter.toString()),
+        Text(moodModel.exCounter.toString())
+      ],
+        );
+      },
+    );
+  }
+}
+
+class MoodHist extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MoodModel>(
+      builder: (context, moodModel, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            for (int i = 0; i < moodModel.histList.length; i++) 
+              Text(moodModel.histList[i]),
+          ],
+        );
+      },
     );
   }
 }
